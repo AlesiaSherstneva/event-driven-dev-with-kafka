@@ -8,4 +8,5 @@ class EmailNotificationMicroserviceApplicationTests {
     @Test
     void contextLoads() {
     }
+
 }
