@@ -33,7 +33,7 @@ public class TransferServiceImpl implements TransferService {
     /* @Transactional(value = "kafkaTransactionManager",
             rollbackFor = {TransferServiceException.class, ConnectException.class},
             noRollbackFor = {SpecificException.class}) */
-    // if we have onr default behaviour
+    // if we have one default behaviour
     @Transactional("transactionManager")
     public boolean transfer(TransferRestModel transferRestModel) {
         WithdrawalRequestedEvent withdrawalEvent = new WithdrawalRequestedEvent(transferRestModel.getSenderId(),
