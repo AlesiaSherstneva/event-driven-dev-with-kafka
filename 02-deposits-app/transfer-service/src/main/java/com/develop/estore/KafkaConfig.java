@@ -1,10 +1,7 @@
 package com.develop.estore;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceUnit;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,9 +14,12 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.transaction.KafkaTransactionManager;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 public class KafkaConfig {
-    @PersistenceContext
+    @PersistenceUnit
     private EntityManagerFactory entityManagerFactory;
 
     @Value("withdraw-money-topic")
@@ -81,14 +81,14 @@ public class KafkaConfig {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
-	@Bean
-	KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> producerFactory) {
-		return new KafkaTemplate<>(producerFactory);
-	}
+    @Bean
+    KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> producerFactory) {
+        return new KafkaTemplate<>(producerFactory);
+    }
 
     @Bean("kafkaTransactionManager")
     KafkaTransactionManager<String, Object> kafkaTransactionManager(ProducerFactory<String, Object> producerFactory) {
-		return new KafkaTransactionManager<>(producerFactory);
+        return new KafkaTransactionManager<>(producerFactory);
     }
 
     @Bean("transactionManager")
