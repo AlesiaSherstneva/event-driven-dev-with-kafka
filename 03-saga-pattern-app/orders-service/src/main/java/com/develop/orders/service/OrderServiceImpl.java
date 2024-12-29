@@ -4,15 +4,13 @@ import com.develop.core.dto.Order;
 import com.develop.core.types.OrderStatus;
 import com.develop.orders.dao.jpa.entity.OrderEntity;
 import com.develop.orders.dao.jpa.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-
-    public OrderServiceImpl(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
 
     @Override
     public Order placeOrder(Order order) {
