@@ -21,3 +21,5 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         spring.json.trusted.packages: com.develop.core.*
+
+order.events.topic.name: order-events
