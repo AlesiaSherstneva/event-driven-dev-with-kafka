@@ -22,4 +22,4 @@ spring:
       properties:
         spring.json.trusted.packages: com.develop.core.*
 
-order.events.topic.name: order-events
+order.events.topic.name: orders-events
