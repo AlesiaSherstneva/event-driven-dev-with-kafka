@@ -26,3 +26,8 @@ order:
   events:
     topic:
       name: orders-events
+
+products:
+  commands:
+    topic:
+      name: products-commands
