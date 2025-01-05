@@ -17,7 +17,7 @@ public class OrderServiceImpl implements OrderService {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Value("${order.events.topic.name}")
-    private String orderEventsTopicName;
+    private String ordersEventsTopicName;
 
     @Override
     public Order placeOrder(Order order) {
@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
                 .productId(entity.getProductId())
                 .productQuantity(entity.getProductQuantity())
                 .build();
-        kafkaTemplate.send(orderEventsTopicName, placeOrder);
+        kafkaTemplate.send(ordersEventsTopicName, placeOrder);
 
         return new Order(
                 entity.getId(),

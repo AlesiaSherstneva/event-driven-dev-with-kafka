@@ -17,7 +17,7 @@ public class OrderSaga {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Value("${products.commands.topic.name}")
-    private final String productCommandTopicName;
+    private final String productsCommandsTopicName;
 
     @KafkaHandler
     public void handleEvent(@Payload OrderCreatedEvent event) {
@@ -26,6 +26,6 @@ public class OrderSaga {
                 .productQuantity(event.getProductQuantity())
                 .orderId(event.getOrderId())
                 .build();
-        kafkaTemplate.send(productCommandTopicName, command);
+        kafkaTemplate.send(productsCommandsTopicName, command);
     }
 }
