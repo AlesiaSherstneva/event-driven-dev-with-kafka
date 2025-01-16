@@ -2,6 +2,7 @@ package com.develop.products.service.handler;
 
 import com.develop.core.dto.Product;
 import com.develop.core.dto.commands.ReserveProductCommand;
+import com.develop.core.dto.events.ProductReservationFailedEvent;
 import com.develop.core.dto.events.ProductReservedEvent;
 import com.develop.products.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,13 @@ public class ProductCommandsHandler {
             kafkaTemplate.send(productsEventsTopicName, productReservedEvent);
         } catch (Exception ex) {
             log.error(ex.getLocalizedMessage(), ex);
+
+            ProductReservationFailedEvent failedEvent = ProductReservationFailedEvent.builder()
+                    .productId(command.getProductId())
+                    .orderId(command.getOrderId())
+                    .productQuantity(command.getProductQuantity())
+                    .build();
+            kafkaTemplate.send(productsEventsTopicName, failedEvent);
         }
     }
 }
