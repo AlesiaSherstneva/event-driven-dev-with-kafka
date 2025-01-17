@@ -22,7 +22,7 @@ spring:
       properties:
         spring.json.trusted.packages: com.develop.core.*
 
-order:
+orders:
   events:
     topic:
       name: orders-events
@@ -31,3 +31,11 @@ products:
   commands:
     topic:
       name: products-commands
+  events:
+    topic:
+      name: products-events
+
+payments:
+  commands:
+    topic:
+      name: payments-commands
