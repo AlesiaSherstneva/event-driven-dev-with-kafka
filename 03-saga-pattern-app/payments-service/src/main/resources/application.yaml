@@ -36,3 +36,6 @@ payments:
   commands:
     topic:
       name: payments-commands
+  events:
+    topic:
+      name: payments-events
