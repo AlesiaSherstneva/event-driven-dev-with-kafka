@@ -1,5 +1,6 @@
 package com.develop.products.config;
 
+import com.develop.core.constants.KafkaConstants;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +15,6 @@ public class KafkaConfig {
     @Value("${products.events.topic.name}")
     private String productsEventsTopicName;
 
-    private final static Integer TOPIC_REPLICATION_FACTOR = 3;
-    private final static Integer TOPIC_PARTITIONS = 3;
-
     @Bean
     KafkaTemplate<String, Object> kafkaTemplate(
             @Autowired(required = false) ProducerFactory<String, Object> producerFactory) {
@@ -26,8 +24,8 @@ public class KafkaConfig {
     @Bean
     NewTopic createProductsEventTopic() {
         return TopicBuilder.name(productsEventsTopicName)
-                .partitions(TOPIC_PARTITIONS)
-                .replicas(TOPIC_REPLICATION_FACTOR)
+                .partitions(KafkaConstants.TOPIC_PARTITIONS)
+                .replicas(KafkaConstants.TOPIC_REPLICATION_FACTOR)
                 .build();
     }
 }

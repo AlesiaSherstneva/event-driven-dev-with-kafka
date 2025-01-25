@@ -1,5 +1,6 @@
 package com.develop.orders.config;
 
+import com.develop.core.constants.KafkaConstants;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +21,6 @@ public class KafkaConfig {
     @Value("${payments.commands.topic.name}")
     private String paymentsCommandsTopicName;
 
-    private final static Integer TOPIC_REPLICATION_FACTOR = 3;
-    private final static Integer TOPIC_PARTITIONS = 3;
-
     @Bean
     KafkaTemplate<String, Object> kafkaTemplate(
             @Autowired(required = false) ProducerFactory<String, Object> producerFactory) {
@@ -32,24 +30,24 @@ public class KafkaConfig {
     @Bean
     NewTopic createOrdersEventsTopic() {
         return TopicBuilder.name(ordersEventsTopicName)
-                .partitions(TOPIC_PARTITIONS)
-                .replicas(TOPIC_REPLICATION_FACTOR)
+                .partitions(KafkaConstants.TOPIC_PARTITIONS)
+                .replicas(KafkaConstants.TOPIC_REPLICATION_FACTOR)
                 .build();
     }
 
     @Bean
     NewTopic createProductsCommandsTopic() {
         return TopicBuilder.name(productsCommandsTopicName)
-                .partitions(TOPIC_PARTITIONS)
-                .replicas(TOPIC_REPLICATION_FACTOR)
+                .partitions(KafkaConstants.TOPIC_PARTITIONS)
+                .replicas(KafkaConstants.TOPIC_REPLICATION_FACTOR)
                 .build();
     }
 
     @Bean
     NewTopic createPaymentsCommandTopic() {
         return TopicBuilder.name(paymentsCommandsTopicName)
-                .partitions(TOPIC_PARTITIONS)
-                .replicas(TOPIC_REPLICATION_FACTOR)
+                .partitions(KafkaConstants.TOPIC_PARTITIONS)
+                .replicas(KafkaConstants.TOPIC_REPLICATION_FACTOR)
                 .build();
     }
 }
