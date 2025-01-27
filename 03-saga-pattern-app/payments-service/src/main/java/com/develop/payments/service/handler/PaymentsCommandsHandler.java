@@ -2,6 +2,7 @@ package com.develop.payments.service.handler;
 
 import com.develop.core.dto.Payment;
 import com.develop.core.dto.commands.ProcessPaymentCommand;
+import com.develop.core.dto.events.PaymentFailedEvent;
 import com.develop.core.dto.events.PaymentProcessedEvent;
 import com.develop.core.exceptions.CreditCardProcessorUnavailableException;
 import com.develop.payments.service.PaymentService;
@@ -43,6 +44,13 @@ public class PaymentsCommandsHandler {
             kafkaTemplate.send(paymentsEventsTopicName, paymentProcessedEvent);
         } catch (CreditCardProcessorUnavailableException ex) {
             log.error(ex.getLocalizedMessage(), ex);
+
+            PaymentFailedEvent failedEvent = PaymentFailedEvent.builder()
+                    .orderId(command.getOrderId())
+                    .productId(command.getProductId())
+                    .productQuantity(command.getProductQuantity())
+                    .build();
+            kafkaTemplate.send(paymentsEventsTopicName, failedEvent);
         }
     }
 }
