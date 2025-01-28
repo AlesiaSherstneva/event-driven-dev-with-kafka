@@ -1,8 +1,10 @@
 package com.develop.orders.saga;
 
+import com.develop.core.dto.commands.ApproveOrderCommand;
 import com.develop.core.dto.commands.ProcessPaymentCommand;
 import com.develop.core.dto.commands.ReserveProductCommand;
 import com.develop.core.dto.events.OrderCreatedEvent;
+import com.develop.core.dto.events.PaymentProcessedEvent;
 import com.develop.core.dto.events.ProductReservedEvent;
 import com.develop.core.types.OrderStatus;
 import com.develop.orders.service.OrderHistoryService;
@@ -17,7 +19,8 @@ import org.springframework.stereotype.Component;
 @Component
 @KafkaListener(topics = {
         "${orders.events.topic.name}",
-        "${products.events.topic.name}"
+        "${products.events.topic.name}",
+        "${payments.events.topic.name}"
 })
 @RequiredArgsConstructor
 public class OrderSaga {
@@ -29,6 +32,9 @@ public class OrderSaga {
 
     @Value("${payments.commands.topic.name}")
     private String paymentsCommandsTopicName;
+
+    @Value("${orders.commands.topic.name}")
+    private String ordersCommandsTopicName;
 
     @KafkaHandler
     public void handleEvent(@Payload OrderCreatedEvent event) {
@@ -53,5 +59,14 @@ public class OrderSaga {
                 .build();
 
         kafkaTemplate.send(paymentsCommandsTopicName, command);
+    }
+
+    @KafkaHandler
+    public void handleEvent(@Payload PaymentProcessedEvent event) {
+        ApproveOrderCommand command = ApproveOrderCommand.builder()
+                .orderId(event.getOrderId())
+                .build();
+
+        kafkaTemplate.send(ordersCommandsTopicName, command);
     }
 }

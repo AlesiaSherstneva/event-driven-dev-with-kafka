@@ -23,6 +23,9 @@ spring:
         spring.json.trusted.packages: com.develop.core.*
 
 orders:
+  commands:
+    topic:
+      name: orders-commands
   events:
     topic:
       name: orders-events
@@ -39,3 +42,6 @@ payments:
   commands:
     topic:
       name: payments-commands
+  events:
+    topic:
+      name: payments-events
