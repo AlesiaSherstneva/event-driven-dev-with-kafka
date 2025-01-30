@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -42,5 +45,16 @@ public class OrderServiceImpl implements OrderService {
                 entity.getProductId(),
                 entity.getProductQuantity(),
                 entity.getStatus());
+    }
+
+    @Override
+    public void approveOrder(UUID orderId) {
+        OrderEntity orderEntity = orderRepository.findById(orderId).orElse(null);
+
+        Assert.notNull(orderEntity,
+                String.format("No order was found with id %s in the database", orderId));
+
+        orderEntity.setStatus(OrderStatus.APPROVED);
+        orderRepository.save(orderEntity);
     }
 }
