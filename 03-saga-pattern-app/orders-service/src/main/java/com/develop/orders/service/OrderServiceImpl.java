@@ -20,7 +20,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${order.events.topic.name}")
+    @Value("${orders.events.topic.name}")
     private String ordersEventsTopicName;
 
     @Override
