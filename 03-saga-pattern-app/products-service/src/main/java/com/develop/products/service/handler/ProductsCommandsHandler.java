@@ -1,6 +1,7 @@
 package com.develop.products.service.handler;
 
 import com.develop.core.dto.Product;
+import com.develop.core.dto.commands.CancelProductReservationCommand;
 import com.develop.core.dto.commands.ReserveProductCommand;
 import com.develop.core.dto.events.ProductReservationFailedEvent;
 import com.develop.core.dto.events.ProductReservedEvent;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 @KafkaListener(topics = "${products.commands.topic.name}")
 @RequiredArgsConstructor
-public class ProductCommandsHandler {
+public class ProductsCommandsHandler {
     private final ProductService productService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -51,5 +52,15 @@ public class ProductCommandsHandler {
                     .build();
             kafkaTemplate.send(productsEventsTopicName, failedEvent);
         }
+    }
+
+    @KafkaHandler
+    public void handleCommand(@Payload CancelProductReservationCommand command) {
+        Product productToCancel = Product.builder()
+                .id(command.getProductId())
+                .quantity(command.getProductQuantity())
+                .build();
+
+        productService.cancelReservation(productToCancel, command.getOrderId());
     }
 }
