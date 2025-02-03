@@ -3,6 +3,7 @@ package com.develop.products.service.handler;
 import com.develop.core.dto.Product;
 import com.develop.core.dto.commands.CancelProductReservationCommand;
 import com.develop.core.dto.commands.ReserveProductCommand;
+import com.develop.core.dto.events.ProductReservationCancelledEvent;
 import com.develop.core.dto.events.ProductReservationFailedEvent;
 import com.develop.core.dto.events.ProductReservedEvent;
 import com.develop.products.service.ProductService;
@@ -62,5 +63,11 @@ public class ProductsCommandsHandler {
                 .build();
 
         productService.cancelReservation(productToCancel, command.getOrderId());
+
+        ProductReservationCancelledEvent event = ProductReservationCancelledEvent.builder()
+                .productId(command.getProductId())
+                .orderId(command.getOrderId())
+                .build();
+        kafkaTemplate.send(productsEventsTopicName, event);
     }
 }
