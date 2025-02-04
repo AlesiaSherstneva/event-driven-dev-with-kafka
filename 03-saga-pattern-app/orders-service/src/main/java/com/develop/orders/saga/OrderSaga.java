@@ -3,11 +3,13 @@ package com.develop.orders.saga;
 import com.develop.core.dto.commands.ApproveOrderCommand;
 import com.develop.core.dto.commands.CancelProductReservationCommand;
 import com.develop.core.dto.commands.ProcessPaymentCommand;
+import com.develop.core.dto.commands.RejectOrderCommand;
 import com.develop.core.dto.commands.ReserveProductCommand;
 import com.develop.core.dto.events.OrderApprovedEvent;
 import com.develop.core.dto.events.OrderCreatedEvent;
 import com.develop.core.dto.events.PaymentFailedEvent;
 import com.develop.core.dto.events.PaymentProcessedEvent;
+import com.develop.core.dto.events.ProductReservationCancelledEvent;
 import com.develop.core.dto.events.ProductReservedEvent;
 import com.develop.core.types.OrderStatus;
 import com.develop.orders.service.OrderHistoryService;
@@ -46,7 +48,6 @@ public class OrderSaga {
                 .productQuantity(event.getProductQuantity())
                 .orderId(event.getOrderId())
                 .build();
-
         kafkaTemplate.send(productsCommandsTopicName, command);
 
         orderHistoryService.add(event.getOrderId(), OrderStatus.CREATED);
@@ -60,7 +61,6 @@ public class OrderSaga {
                 .productPrice(event.getProductPrice())
                 .productQuantity(event.getProductQuantity())
                 .build();
-
         kafkaTemplate.send(paymentsCommandsTopicName, command);
     }
 
@@ -69,7 +69,6 @@ public class OrderSaga {
         ApproveOrderCommand command = ApproveOrderCommand.builder()
                 .orderId(event.getOrderId())
                 .build();
-
         kafkaTemplate.send(ordersCommandsTopicName, command);
     }
 
@@ -85,7 +84,16 @@ public class OrderSaga {
                 .orderId(event.getOrderId())
                 .productQuantity(event.getProductQuantity())
                 .build();
-
         kafkaTemplate.send(productsCommandsTopicName, command);
+    }
+
+    @KafkaHandler
+    public void handleEvent(@Payload ProductReservationCancelledEvent event) {
+        RejectOrderCommand command = RejectOrderCommand.builder()
+                .orderId(event.getOrderId())
+                .build();
+        kafkaTemplate.send(ordersCommandsTopicName, command);
+
+        orderHistoryService.add(event.getOrderId(), OrderStatus.REJECTED);
     }
 }
