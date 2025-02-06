@@ -1,6 +1,7 @@
 package com.develop.orders.service.handler;
 
 import com.develop.core.dto.commands.ApproveOrderCommand;
+import com.develop.core.dto.commands.RejectOrderCommand;
 import com.develop.orders.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaHandler;
@@ -17,5 +18,10 @@ public class OrdersCommandsHandler {
     @KafkaHandler
     public void handleCommand(@Payload ApproveOrderCommand command) {
         orderService.approveOrder(command.getOrderId());
+    }
+
+    @KafkaHandler
+    public void handleCommand(@Payload RejectOrderCommand command) {
+        orderService.rejectOrder(command.getOrderId());
     }
 }
