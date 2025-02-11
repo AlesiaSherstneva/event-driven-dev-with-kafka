@@ -42,19 +42,30 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product save(Product product) {
-        ProductEntity productEntity = new ProductEntity();
-        productEntity.setName(product.getName());
-        productEntity.setPrice(product.getPrice());
-        productEntity.setQuantity(product.getQuantity());
+        ProductEntity productEntity = ProductEntity.builder()
+                .name(product.getName())
+                .price(product.getPrice())
+                .quantity(product.getQuantity())
+                .build();
         productRepository.save(productEntity);
 
-        return new Product(productEntity.getId(), product.getName(), product.getPrice(), product.getQuantity());
+        return Product.builder()
+                .id(productEntity.getId())
+                .name(product.getName())
+                .price(product.getPrice())
+                .quantity(product.getQuantity())
+                .build();
     }
 
     @Override
     public List<Product> findAll() {
         return productRepository.findAll().stream()
-                .map(entity -> new Product(entity.getId(), entity.getName(), entity.getPrice(), entity.getQuantity()))
+                .map(entity -> Product.builder()
+                        .id(entity.getId())
+                        .name(entity.getName())
+                        .price(entity.getPrice())
+                        .quantity(entity.getQuantity())
+                        .build())
                 .collect(Collectors.toList());
     }
 }

@@ -25,11 +25,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order placeOrder(Order order) {
-        OrderEntity entity = new OrderEntity();
-        entity.setCustomerId(order.getCustomerId());
-        entity.setProductId(order.getProductId());
-        entity.setProductQuantity(order.getProductQuantity());
-        entity.setStatus(OrderStatus.CREATED);
+        OrderEntity entity = OrderEntity.builder()
+                .customerId(order.getCustomerId())
+                .productId(order.getProductId())
+                .productQuantity(order.getProductQuantity())
+                .status(OrderStatus.CREATED)
+                .build();
         orderRepository.save(entity);
 
         OrderCreatedEvent placeOrder = OrderCreatedEvent.builder()
@@ -40,12 +41,13 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         kafkaTemplate.send(ordersEventsTopicName, placeOrder);
 
-        return new Order(
-                entity.getId(),
-                entity.getCustomerId(),
-                entity.getProductId(),
-                entity.getProductQuantity(),
-                entity.getStatus());
+        return Order.builder()
+                .orderId(entity.getId())
+                .customerId(entity.getCustomerId())
+                .productId(entity.getProductId())
+                .productQuantity(entity.getProductQuantity())
+                .status(entity.getStatus())
+                .build();
     }
 
     @Override

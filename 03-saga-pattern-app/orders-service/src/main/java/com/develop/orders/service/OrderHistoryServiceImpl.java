@@ -9,7 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,10 +20,11 @@ public class OrderHistoryServiceImpl implements OrderHistoryService {
 
     @Override
     public void add(UUID orderId, OrderStatus orderStatus) {
-        OrderHistoryEntity entity = new OrderHistoryEntity();
-        entity.setOrderId(orderId);
-        entity.setStatus(orderStatus);
-        entity.setCreatedAt(new Timestamp(new Date().getTime()));
+        OrderHistoryEntity entity = OrderHistoryEntity.builder()
+                .orderId(orderId)
+                .status(orderStatus)
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
         orderHistoryRepository.save(entity);
     }
 
